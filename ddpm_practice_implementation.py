@@ -4,6 +4,7 @@ import torch
 import torch.nn.functional as F
 import torch.utils.data
 from torch import nn
+from labml_nn.diffusion.ddpm.utils import gather
 
 class DenoiseDiffusion:
 
@@ -16,6 +17,9 @@ class DenoiseDiffusion:
         self.alpha_bar = torch.cumprod(self.alpha, dim=0)
         self.n_steps = n_steps
         self.sigma2 = self.beta
+        self.one_by_sqrt_alpha = self.alpha ** (-0.5)
+        self.sqrt_one_minus_alpha_cumulative = (1. - self.alpha_bar) ** 0.5
+
 
     def q_xt_x0(self, x0: torch.Tensor, t: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]: #get q(x_t|x_0) dist.
 
@@ -28,7 +32,7 @@ class DenoiseDiffusion:
         if eps is None:
             eps = torch.randn_like(x0)
         mean, var = self.q_xt_x0(x0, t)
-        return mean + (var ** 0.5) * eps
+        return mean + (var ** 0.5) * eps, eps
     
     def p_sample(self, xt: torch.Tensor, t: torch.Tensor):
 
