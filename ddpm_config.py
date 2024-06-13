@@ -4,15 +4,16 @@ import os
 
 @dataclass
 class BaseConfig:
-    DEVICE = torch.device("gpu" if torch.cuda.is_available() else "cpu")
+    DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     DATASET = "CIFAR-10"
 
     working_dir = os.getcwd()
     root_log_dir = os.path.join(working_dir, "Logs_Checkpoints", "Inference")
     root_checkpoint_dir = os.path.join("Logs_Checkpoints", "checkpoints")
 
-    log_dir = "version_0"
-    checkpoint_dir = "version_0"
+    
+    log_dir = "version_18"
+    checkpoint_dir = os.path.join(root_checkpoint_dir, "version_18")
 
 class TrainingConfig:
     TIMESTEPS = 1000

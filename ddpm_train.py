@@ -56,7 +56,7 @@ def train_one_epoch(model, loader, sd, optimizer, scaler, loss_fn, epoch=800,
 
 @torch.no_grad()
 def reverse_diffusion(model, sd, timesteps=1000, img_shape=(3, 64, 64), 
-                      num_images=5, nrow=8, device="cpu", **kwargs):
+                      num_images=5, nrow=8, device=BConfig.DEVICE, **kwargs):
     
     x = torch.randn((num_images, *img_shape), device=device)
     model.eval()

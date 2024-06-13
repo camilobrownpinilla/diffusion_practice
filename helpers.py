@@ -30,7 +30,7 @@ class DeviceDataLoader:
         return len(self.dl)
 
 def get_default_device():
-    return torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    return torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 def save_images(images, path, **kwargs):
     grid = torchvision.utils.make_grid(images, **kwargs)
@@ -51,7 +51,7 @@ def setup_log_directory(config):
     
     if os.path.isdir(config.root_log_dir):
         # Get all folders numbers in the root_log_dir
-        folder_numbers = [int(folder.replace("version_", "")) for folder in os.listdir(config.root_log_dir)]
+        folder_numbers = [int(folder.replace("version_", "")) for folder in os.listdir(config.root_log_dir) if folder.startswith("version_")]
         
         # Find the latest version number present in the log_dir
         last_version_number = max(folder_numbers)

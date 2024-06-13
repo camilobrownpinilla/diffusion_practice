@@ -21,20 +21,21 @@ model = UNet(
 )
 
 
-model.load_state_dict(torch.load(os.path.join(BConfig.checkpoint_dir, "ckpt.tar"), map_location='cpu')['model'])
+
+model.load_state_dict(torch.load(os.path.join(BConfig.checkpoint_dir, "ckpt.tar"), map_location=BConfig.DEVICE)['model'])
 
 model.to(BConfig.DEVICE)
 
-sd = SimpleDiffusion(
-    num_diffusion_timesteps = TrainingConfig.TIMESTEPS,
-    img_shape               = TrainingConfig.IMG_SHAPE,
-    device                  = BaseConfig.DEVICE,
+sd = ddpm_practice_implementation.DenoiseDiffusion(
+    model,
+    TConfig.TIMESTEPS,
+    BConfig.DEVICE
 )
 
 log_dir = "inference_results"
 os.makedirs(log_dir, exist_ok=True)
 
-generate_video = False # Set it to True for generating video of the entire reverse diffusion proces or False to for saving only the final generated image.
+generate_video = True # Set it to True for generating video of the entire reverse diffusion proces or False to for saving only the final generated image.
  
 ext = ".mp4" if generate_video else ".png"
 filename = f"{dependencies.datetime.now().strftime('%Y%m%d-%H%M%S')}{ext}"

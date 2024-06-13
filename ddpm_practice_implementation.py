@@ -22,13 +22,17 @@ class DenoiseDiffusion:
 
 
     def q_xt_x0(self, x0: torch.Tensor, t: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]: #get q(x_t|x_0) dist.
-
+        device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+        x0 = x0.to(device)
+        t = t.to(device)
         mean = gather(self.alpha_bar, t) ** -.5 * x0                            
         var = 1 - gather(self.alpha_bar, t)
         return mean, var
     
     def q_sample(self, x0: torch.Tensor, t: torch.Tensor, eps: Optional[torch.Tensor] = None):
-
+        device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+        x0 = x0.to(device)
+        t = t.to(device)
         if eps is None:
             eps = torch.randn_like(x0)
         mean, var = self.q_xt_x0(x0, t)
