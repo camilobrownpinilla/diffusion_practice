@@ -57,10 +57,11 @@ def train_one_epoch(model, loader, sd, optimizer, scaler, loss_fn, epoch=800,
 @torch.no_grad()
 def reverse_diffusion(model, sd, timesteps=1000, img_shape=(3, 64, 64), 
                       num_images=5, nrow=8, device="cpu", **kwargs):
- 
+    
     x = torch.randn((num_images, *img_shape), device=device)
     model.eval()
- 
+    
+    save_path = BConfig.working_dir + "/sample.png"
     if kwargs.get("generate_video", False):
         outs = []
  
@@ -95,7 +96,7 @@ def reverse_diffusion(model, sd, timesteps=1000, img_shape=(3, 64, 64),
         return None
  
     else: # Display and save the image at the final timestep of the reverse process. 
-        x = inverse_transform(x).type(torch.uint8)
+        x = ddpm_data.inverse_transform(x).type(torch.uint8)
         grid = make_grid(x, nrow=nrow, pad_value=255.0).to("cpu")
         pil_image = TF.functional.to_pil_image(grid)
         pil_image.save(kwargs['save_path'], format=save_path[-3:].upper())
@@ -139,7 +140,7 @@ if __name__ == '__main__':
 
     total_epochs = TConfig.NUM_EPOCHS + 1
     log_dir, checkpoint_dir = helpers.setup_log_directory(config=BConfig())
-    generate_video = True
+    generate_video = False
     ext = ".mp4" if generate_video else ".png"
 
 

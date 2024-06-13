@@ -4,10 +4,11 @@ import os
 
 @dataclass
 class BaseConfig:
-    DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    DEVICE = torch.device("gpu" if torch.cuda.is_available() else "cpu")
     DATASET = "CIFAR-10"
 
-    root_log_dir = os.path.join("Logs_Checkpoints", "Inference")
+    working_dir = os.getcwd()
+    root_log_dir = os.path.join(working_dir, "Logs_Checkpoints", "Inference")
     root_checkpoint_dir = os.path.join("Logs_Checkpoints", "checkpoints")
 
     log_dir = "version_0"
