@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 import torch
+import helpers
 import os
 
 @dataclass
@@ -11,9 +12,9 @@ class BaseConfig:
     root_log_dir = os.path.join(working_dir, "Logs_Checkpoints", "Inference")
     root_checkpoint_dir = os.path.join("Logs_Checkpoints", "checkpoints")
 
-    
-    log_dir = "version_18"
-    checkpoint_dir = os.path.join(root_checkpoint_dir, "version_18")
+    recent_version = helpers.get_most_recent_version(root_checkpoint_dir)
+    log_dir = os.path.join(root_log_dir, recent_version)
+    checkpoint_dir = os.path.join(root_checkpoint_dir, recent_version)
 
 class TrainingConfig:
     TIMESTEPS = 1000

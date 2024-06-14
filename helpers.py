@@ -97,3 +97,7 @@ def frames2vid(images, save_path):
 def display_gif(gif_path):
     b64 = base64.b64encode(open(gif_path,'rb').read()).decode('ascii')
     display(HTML(f'<img src="data:image/gif;base64,{b64}" />'))
+
+def get_most_recent_version(dir):
+    folder_numbers = [int(folder.replace("version_", "")) for folder in os.listdir(dir) if folder.startswith("version_")]
+    return max(folder_numbers)
